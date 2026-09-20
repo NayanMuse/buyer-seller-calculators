@@ -1,84 +1,109 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Buyer &amp; Seller Calculators</title>
-  <meta name="description" content="Real-estate calculators for home buyers and sellers: mortgage payment, affordability, closing costs, net proceeds, break-even, rent vs buy, and payoff." />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="app">
-    <!-- ============ Sidebar navigation ============ -->
-    <aside class="sidebar">
-      <div class="brand">
-        <span class="brand-mark">&#8962;</span>
-        <div>
-          <div class="brand-title">Deal Math</div>
-          <div class="brand-sub">Buyer &amp; Seller Calculators</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buyer &amp; Seller Calculators</title>
+    <meta
+      name="description"
+      content="Real-estate calculators for home buyers and sellers: mortgage payment, affordability, closing costs, net proceeds, break-even, rent vs buy, and payoff."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- ============ Sidebar navigation ============ -->
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark">&#8962;</span>
+          <div>
+            <div class="brand-title">Deal Math</div>
+            <div class="brand-sub">Buyer &amp; Seller Calculators</div>
+          </div>
         </div>
-      </div>
-      <nav class="nav" id="nav" aria-label="Calculators">
-        <button class="nav-item active" data-tool="payment">
-          <span class="nav-icon">&#128176;</span>
-          <span class="nav-text"><span class="nav-label">Monthly Payment</span><span class="nav-hint">PITI breakdown</span></span>
-        </button>
-        <button class="nav-item" data-tool="affordability">
-          <span class="nav-icon">&#128200;</span>
-          <span class="nav-text"><span class="nav-label">Affordability</span><span class="nav-hint">What price can you carry?</span></span>
-        </button>
-        <button class="nav-item" data-tool="cash">
-          <span class="nav-icon">&#128179;</span>
-          <span class="nav-text"><span class="nav-label">Cash Needed to Buy</span><span class="nav-hint">Down payment + closing</span></span>
-        </button>
-        <button class="nav-item" data-tool="proceeds">
-          <span class="nav-icon">&#129534;</span>
-          <span class="nav-text"><span class="nav-label">Seller Net Proceeds</span><span class="nav-hint">What you walk away with</span></span>
-        </button>
-        <button class="nav-item" data-tool="breakeven">
-          <span class="nav-icon">&#9878;</span>
-          <span class="nav-text"><span class="nav-label">Break-Even Price</span><span class="nav-hint">Sell without losing</span></span>
-        </button>
-        <button class="nav-item" data-tool="rentbuy">
-          <span class="nav-icon">&#8646;</span>
-          <span class="nav-text"><span class="nav-label">Rent vs Buy</span><span class="nav-hint">Which costs less?</span></span>
-        </button>
-        <button class="nav-item" data-tool="payoff">
-          <span class="nav-icon">&#9201;</span>
-          <span class="nav-text"><span class="nav-label">Payoff Accelerator</span><span class="nav-hint">Extra payments, less interest</span></span>
-        </button>
-      </nav>
-      <div class="sidebar-foot">
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">&#9790; Dark</button>
-        <p class="disclaimer">Estimates only — not financial advice. Verify figures with your lender and agent.</p>
-      </div>
-    </aside>
+        <nav class="nav" id="nav" aria-label="Calculators">
+          <button class="nav-item active" data-tool="payment">
+            <span class="nav-icon">&#128176;</span>
+            <span class="nav-text"
+              ><span class="nav-label">Monthly Payment</span
+              ><span class="nav-hint">PITI breakdown</span></span
+            >
+          </button>
+          <button class="nav-item" data-tool="affordability">
+            <span class="nav-icon">&#128200;</span>
+            <span class="nav-text"
+              ><span class="nav-label">Affordability</span
+              ><span class="nav-hint">What price can you carry?</span></span
+            >
+          </button>
+          <button class="nav-item" data-tool="cash">
+            <span class="nav-icon">&#128179;</span>
+            <span class="nav-text"
+              ><span class="nav-label">Cash Needed to Buy</span
+              ><span class="nav-hint">Down payment + closing</span></span
+            >
+          </button>
+          <button class="nav-item" data-tool="proceeds">
+            <span class="nav-icon">&#129534;</span>
+            <span class="nav-text"
+              ><span class="nav-label">Seller Net Proceeds</span
+              ><span class="nav-hint">What you walk away with</span></span
+            >
+          </button>
+          <button class="nav-item" data-tool="breakeven">
+            <span class="nav-icon">&#9878;</span>
+            <span class="nav-text"
+              ><span class="nav-label">Break-Even Price</span
+              ><span class="nav-hint">Sell without losing</span></span
+            >
+          </button>
+          <button class="nav-item" data-tool="rentbuy">
+            <span class="nav-icon">&#8646;</span>
+            <span class="nav-text"
+              ><span class="nav-label">Rent vs Buy</span><span class="nav-hint">Which costs less?</span></span
+            >
+          </button>
+          <button class="nav-item" data-tool="payoff">
+            <span class="nav-icon">&#9201;</span>
+            <span class="nav-text"
+              ><span class="nav-label">Payoff Accelerator</span
+              ><span class="nav-hint">Extra payments, less interest</span></span
+            >
+          </button>
+        </nav>
+        <div class="sidebar-foot">
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">&#9790; Dark</button>
+          <p class="disclaimer">
+            Estimates only — not financial advice. Verify figures with your lender and agent.
+          </p>
+        </div>
+      </aside>
 
-    <!-- ============ Main workspace ============ -->
-    <main class="main">
-      <header class="topbar">
-        <h1 id="toolTitle">Monthly Payment</h1>
-        <p id="toolSub">Principal &amp; interest, taxes, insurance, HOA — the full monthly picture.</p>
-      </header>
+      <!-- ============ Main workspace ============ -->
+      <main class="main">
+        <header class="topbar">
+          <h1 id="toolTitle">Monthly Payment</h1>
+          <p id="toolSub">Principal &amp; interest, taxes, insurance, HOA — the full monthly picture.</p>
+        </header>
 
-      <div class="workspace">
-        <section class="panel inputs" aria-label="Inputs">
-          <h2>Your numbers</h2>
-          <div id="inputFields" class="fields"></div>
-        </section>
+        <div class="workspace">
+          <section class="panel inputs" aria-label="Inputs">
+            <h2>Your numbers</h2>
+            <div id="inputFields" class="fields"></div>
+          </section>
 
-        <section class="panel results" aria-label="Results" aria-live="polite">
-          <h2>Results</h2>
-          <div id="resultFields"></div>
-          <details class="show-work">
-            <summary>Show your work — the math behind this</summary>
-            <div id="formulaBox" class="formula"></div>
-          </details>
-        </section>
-      </div>
-    </main>
-  </div>
+          <section class="panel results" aria-label="Results" aria-live="polite">
+            <h2>Results</h2>
+            <div id="resultFields"></div>
+            <details class="show-work">
+              <summary>Show your work — the math behind this</summary>
+              <div id="formulaBox" class="formula"></div>
+            </details>
+          </section>
+        </div>
+      </main>
+    </div>
 
-  <script src="app.js"></script>
-</body>
+    <script src="app.js"></script>
+  </body>
 </html>
