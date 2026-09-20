@@ -1,0 +1,25 @@
+# CI — the automated code reviewer. Runs on every push to main and on PRs.
+name: CI
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  review:
+    name: Lint + format + tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Lint (bug classes, dead code, dangerous patterns)
+        run: npm run lint
+      - name: Format check (Prettier)
+        run: npm run format:check
+      - name: Unit tests
+        run: npm test
