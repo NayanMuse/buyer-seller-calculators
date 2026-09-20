@@ -9,10 +9,16 @@
 "use strict";
 
 /* ---------------- formatting ---------------- */
-const money = (n) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n || 0);
-const money2 = (n) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n || 0);
+const money = (n) => {
+  const v = n || 0;
+  // Float dust (e.g. -1.8e-10) would render as "-$0" — snap to zero.
+  const clean = Math.abs(v) < 0.5 ? 0 : v;
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(clean);
+};
 const num = (n, d = 0) =>
   new Intl.NumberFormat("en-US", { minimumFractionDigits: d, maximumFractionDigits: d }).format(n || 0);
 
@@ -41,7 +47,6 @@ const math = {
   // Remaining balance after k payments (for payoff / equity math).
   balanceAfter(principal, annualRatePct, years, paymentsMade) {
     const r = annualRatePct / 100 / 12;
-    const n = Math.round(years * 12);
     const pmt = this.monthlyPI(principal, annualRatePct, years);
     if (r === 0) return principal - pmt * paymentsMade;
     const f = Math.pow(1 + r, paymentsMade);
@@ -52,7 +57,9 @@ const math = {
   // Returns { months, totalInterest }.
   payoffWithExtra(principal, annualRatePct, basePayment, extra) {
     const r = annualRatePct / 100 / 12;
-    let bal = principal, months = 0, interest = 0;
+    let bal = principal,
+      months = 0,
+      interest = 0;
     const pmt = basePayment + extra;
     while (bal > 0 && months < 1200) {
       const i = bal * r;
@@ -83,7 +90,8 @@ const TOOLS = {
     compute(v) {
       const loan = v.price * (1 - v.downPct / 100);
       const pi = math.monthlyPI(loan, v.rate, v.years);
-      const tax = v.taxAnnual / 12, ins = v.insAnnual / 12;
+      const tax = v.taxAnnual / 12,
+        ins = v.insAnnual / 12;
       const total = pi + tax + ins + v.hoa;
       return {
         hero: { label: "Total monthly payment", value: money(total) },
@@ -93,7 +101,7 @@ const TOOLS = {
           { k: "Insurance", v: money(ins) },
           { k: "HOA", v: money(v.hoa) },
           { k: "Loan amount", v: money(loan) },
-          { k: "Down payment", v: money(v.price * v.downPct / 100) },
+          { k: "Down payment", v: money((v.price * v.downPct) / 100) },
         ],
         formula: `
           <p>Monthly P&amp;I uses the standard amortization formula:</p>
@@ -126,8 +134,8 @@ const TOOLS = {
     ],
     compute(v) {
       const monthly = v.income / 12;
-      const front = monthly * 0.28;                    // housing ≤ 28% of income
-      const back = monthly * 0.36 - v.debts;           // all debts ≤ 36%
+      const front = monthly * 0.28; // housing ≤ 28% of income
+      const back = monthly * 0.36 - v.debts; // all debts ≤ 36%
       const allowed = Math.min(front, back);
       // Tax scales with price, so solve by fixed-point iteration.
       let price = 0;
@@ -144,7 +152,7 @@ const TOOLS = {
           { k: "36% debt rule allows", v: money(back) + "/mo" },
           { k: "Binding limit", v: front <= back ? "Housing (28%)" : "Total debt (36%)" },
           { k: "Loan amount", v: money(loan) },
-          { k: "Down payment needed", v: money(price * v.downPct / 100) },
+          { k: "Down payment needed", v: money((price * v.downPct) / 100) },
         ],
         formula: `
           <p>Lenders cap housing at <b>28%</b> of gross monthly income and all debts at <b>36%</b>. The lower of the two binds.</p>
@@ -291,8 +299,8 @@ const TOOLS = {
       const rentTotal = v.rent * months;
       const paidTotal = ownMonthly * months;
       const balAfter = math.balanceAfter(loan, v.rate, v.years, months);
-      const principalPaid = loan - balAfter;                    // becomes equity
-      const buyNetCost = down + paidTotal - principalPaid;       // out of pocket minus equity built
+      const principalPaid = loan - balAfter; // becomes equity
+      const buyNetCost = down + paidTotal - principalPaid; // out of pocket minus equity built
       const buyWins = buyNetCost < rentTotal;
       return {
         hero: {
@@ -367,7 +375,9 @@ const TOOLS = {
 /* ---------------- UI wiring ---------------- */
 const state = { tool: "payment", values: {} };
 
-function getTool() { return TOOLS[state.tool]; }
+function getTool() {
+  return TOOLS[state.tool];
+}
 
 function renderInputs() {
   const tool = getTool();
@@ -403,7 +413,10 @@ function renderResults() {
   hero.className = "result-hero";
   hero.innerHTML = `<div class="hero-label"></div><div class="hero-value"></div>`;
   hero.querySelector(".hero-label").textContent = out.hero.label;
-  hero.querySelector(".hero-value").textContent = out.hero.value;
+  const heroValue = hero.querySelector(".hero-value");
+  heroValue.textContent = out.hero.value;
+  if (out.hero.good === true) heroValue.classList.add("good");
+  else if (out.hero.good === false) heroValue.classList.add("warn");
   res.appendChild(hero);
 
   const rows = document.createElement("div");
@@ -428,9 +441,7 @@ function selectTool(key) {
   const tool = getTool();
   document.getElementById("toolTitle").textContent = tool.title;
   document.getElementById("toolSub").textContent = tool.sub;
-  document.querySelectorAll(".nav-item").forEach((b) =>
-    b.classList.toggle("active", b.dataset.tool === key)
-  );
+  document.querySelectorAll(".nav-item").forEach((b) => b.classList.toggle("active", b.dataset.tool === key));
   renderInputs();
   renderResults();
 }
@@ -441,7 +452,9 @@ function initTheme() {
   const dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
   document.documentElement.dataset.theme = dark ? "dark" : "";
   const btn = document.getElementById("themeToggle");
-  const paint = () => { btn.innerHTML = document.documentElement.dataset.theme === "dark" ? "&#9788; Light" : "&#9790; Dark"; };
+  const paint = () => {
+    btn.innerHTML = document.documentElement.dataset.theme === "dark" ? "&#9788; Light" : "&#9790; Dark";
+  };
   paint();
   btn.addEventListener("click", () => {
     const isDark = document.documentElement.dataset.theme === "dark";
@@ -451,9 +464,9 @@ function initTheme() {
   });
 }
 
-document.querySelectorAll(".nav-item").forEach((b) =>
-  b.addEventListener("click", () => selectTool(b.dataset.tool))
-);
+document
+  .querySelectorAll(".nav-item")
+  .forEach((b) => b.addEventListener("click", () => selectTool(b.dataset.tool)));
 
 initTheme();
 selectTool("payment");
