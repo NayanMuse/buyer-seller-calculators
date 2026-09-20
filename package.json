@@ -1,0 +1,16 @@
+{
+  "description": "Home-buying and selling calculators — static site, no build step.",
+  "devDependencies": {
+    "eslint": "^10.11.0",
+    "prettier": "^3.6.2"
+  },
+  "name": "buyer-seller-calculators",
+  "private": true,
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "test": "node --test 'tests/**/*.test.js'"
+  },
+  "version": "1.0.0"
+}
